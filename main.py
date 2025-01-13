@@ -343,12 +343,29 @@ for key in session_keys:
 
 # Main page content
 st.title("Market Anomaly Detection")
+
+
+# Portfolio value and number of assets inputs with more context
+st.subheader("Define Your Portfolio")
+portfolio_value = st.number_input(
+    "Enter Portfolio Value ($)", 
+    min_value=0, 
+    value=100000, 
+    step=1000,
+    help="The total value of your investment portfolio. This can include stocks, bonds, or other assets. Use this to analyze potential risks and returns."
+)
+
+num_assets = st.number_input(
+    "Enter Number of Assets (5-20)", 
+    min_value=5, 
+    max_value=20, 
+    value=10, 
+    step=1,
+    help="Specify the number of different assets in your portfolio. This could represent various stocks, bonds, commodities, or other investment instruments."
+)
+
+# Section header for selecting data to display
 st.header("Select Data to Display")
-
-# Portfolio value and number of assets inputs
-portfolio_value = st.number_input("Enter Portfolio Value ($)", min_value=0, value=100000, step=1000)
-num_assets = st.number_input("Enter Number of Assets (5-20)", min_value=5, max_value=20, value=10, step=1)
-
 
 # First button ("Today's Market Data") is always visible
 if not st.session_state.show_market_data:
@@ -398,7 +415,10 @@ if st.session_state.show_market_data:
 
 if st.session_state.show_market_crash_probability:
     with st.expander("Market Crash Probability"):
-        P_crash = predict_probability(today_df)
+        # Only calculate P_crash if it's not already in session state
+        if 'P_crash' not in st.session_state:
+            st.session_state.P_crash = predict_probability(today_df)
+        P_crash = st.session_state.P_crash
         st.write(f"### Market Crash Probability: {P_crash * 100:.2f}%")
 
 if st.session_state.show_portfolio_before:
