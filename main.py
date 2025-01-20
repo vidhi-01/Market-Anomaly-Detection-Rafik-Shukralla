@@ -7,6 +7,7 @@ import pickle
 from groq import Groq
 import os
 from dotenv import load_dotenv
+from streamlit_chat import message
 
 load_dotenv()
 
